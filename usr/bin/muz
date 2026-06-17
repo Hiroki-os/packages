@@ -1,0 +1,30 @@
+#!/bin/bash
+# muz - Hiroki OS Paket Yoneticisi
+# Kullanim:
+#   muz install <paket>     -> pacman ile yukle (Arch repolari)
+#   muz lu install <paket>   -> kendi repondan yukle
+#   muz lu -S <paket>        -> kendi repondan yukle
+#   muz ara <paket>          -> pacman ile ara
+#   muz sil <paket>          -> pacman ile sil
+#   muz guncelle             -> sistemi guncelle
+
+LU_MODE=false
+ARGS=()
+
+# lu modu mu?
+if [ "$1" = "lu" ]; then
+    LU_MODE=true
+    shift
+fi
+
+# Tum argumanlari isle
+for arg in "$@"; do
+    if $LU_MODE && [ "${arg:0:1}" != "-" ]; then
+        # lu modunda, flag olmayan argumanlara hiroki/ ekle
+        ARGS+=("hiroki/$arg")
+    else
+        ARGS+=("$arg")
+    fi
+done
+
+exec pacman "${ARGS[@]}"
